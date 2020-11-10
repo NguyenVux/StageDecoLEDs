@@ -1,11 +1,32 @@
 "use strict";
 const { randomInt } = require('crypto');
-let express = require('express');
-let app = express();
-let http = require('http').createServer(app);
-let io = require('socket.io')(http);
-let fs = require('fs');
+const express = require('express');
+const app = express();
+const http = require('http').createServer(app);
+const io = require('socket.io')(http);
+const fs = require('fs');
 
+const SerialPort = require('serialport');
+const Readline = require('@serialport/parser-readline');
+//const port = new SerialPort("COM3", { baudRate: 115200 });
+
+//const parser = port.pipe(new Readline());
+
+let preColor;
+// parser.on('data', line => 
+// {
+  
+//   if(line == true)
+//   {
+//     port.write(Buffer.from(preColor));
+//     console.log("resend data");
+//   }
+//   else
+//   {
+//     console.log(`> ${line == true} - ${line}`);
+//   }
+  
+// });
 
 
 app.use(express.static('front_end'));
@@ -22,10 +43,10 @@ function Color(r,g,b)
 }
 let LedsInfo = [];
 let ledCount = 0;
+
 (()=>{
   let data =fs.readFileSync('./config.json','ascii');
   ledCount = JSON.parse(data).led_Count;
-  console.log(ledCount);
 })();
 
 
@@ -35,7 +56,6 @@ for(let i = 0; i < ledCount ; ++i)
 }
 
 io.on('connection', (socket) => {
-  console.log(LedsInfo);
   io.emit('init',LedsInfo);
   socket.on('update',()=>{
     console.log("Recive on update");
@@ -44,6 +64,13 @@ io.on('connection', (socket) => {
         LedsInfo[i] = Color(randomInt(0,255),randomInt(0,255),randomInt(0,255));
     }
     io.emit('update',LedsInfo);
+  });
+
+  socket.on("ColorChange",msg =>
+  {
+    preColor = Uint8Array.from(Object.values(msg));
+    // port.write(Buffer.from(preColor));
+    console.log("DATA SENDED");
   });
 });
 

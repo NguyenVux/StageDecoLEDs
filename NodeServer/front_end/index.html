@@ -2,13 +2,16 @@
 
 <head>
     <title>Led control panel</title>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="./js/util.js"></script>
+    <script src="./js/iro.js"></script>
     <link rel="stylesheet" href="/css/style.css">
 </head>
 
 <body>
 
-    <ul class="led-container">
-        <li id="1" class="line">
+    <ul id = "ledContainer" class="led-container">
+        <li id="strip" class="line">
             <span class="led">led</span>
             <span class="led">led</span>
             <span class="led">led</span>
@@ -20,16 +23,21 @@
             <span class="led">led</span>
             <span class="led">led</span>
         </li>
-        <li id="2" class="line"></li>
-        <li id="3" class="line"></li>
-        <li id="4" class="line"></li>
     </ul>
     <ul class="control">
-        <li class="control__update" onclick="console.log(123)">Update</li>
+        <li id="color_picker">
+
+        </li>
     </ul>
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="./js/util.js"></script>
-    <script src="./js/UI.min.js"></script>
+    <script src="./js/UI.js"></script>
+    <script>
+        let k = new iro.ColorPicker('#color_picker');
+        k.on('color:change', function (color) {
+            document.getElementById("ledContainer").style.backgroundColor = toCSS(color.rgb);
+            socket.emit("ColorChange",color.rgb);
+            console.log(color.rgb);
+        });
+    </script>
 </body>
 
 </html>

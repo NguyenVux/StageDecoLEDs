@@ -14,11 +14,11 @@ let ledsArrayUI = [];
 let socket = io();
 
 socket.on('init',(msg)=>{
-    console.log(msg);
+    
     for(let i = 0; i < msg.length; ++i)
     {
-        let c = msg[i];
-        ledsInfo.push(c);
+        console.log(msg[i]);
+        ledsInfo.push(msg[i]);
     }
     for(let i = 0; i < ledsInfo.length; ++i)
     {
@@ -27,7 +27,7 @@ socket.on('init',(msg)=>{
         element.className = "led";
         element.id = "Led:"+i;
         element.style.backgroundColor = toCSS(ledsInfo[i]);
-        document.getElementById("led-container").appendChild(element);
+        document.getElementById("strip").appendChild(element);
         ledsArrayUI.push(element);
     }
 
@@ -47,6 +47,10 @@ socket.on('update',(msg)=>{
     else{
         location.reload();
     }
+});
+
+socket.on('CurrentEffect',(msg)=>{
+    
 });
 
 

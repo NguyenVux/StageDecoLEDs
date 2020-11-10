@@ -1,0 +1,16 @@
+BQL cần chuẩn bị các thành phần:
+    -Phần mêm: 
+        -hệ điều hành thích hợp như linux, window server. đảm bảo được xử lý thời gian thực.
+        -phần mềm log lại mọi hoạt động trong hệ thống để đảm bảo backup dữ liệu.
+        -phần mềm chuyên dụng để chấm công, tính lương, tính thưởng,...
+    -Hệ thống truyền thông: sử dụng mạng LAN vì trong phạm vi nhỏ (một công ty)
+    -Tài nguyên về dữ liệu:
+        -hệ thống cơ sở dữ liệu Sử dụng mô hình relational database để quản lý thuộc tính của từng nhân viên
+    -Tài nguyên phần cứng:
+        -hệ thống máy tính đủ đảm bảo luôn hoạt động.(máy trạm doanh nghiệp)
+        -chuẩn bị hệ thống dự phòng để chuyển đổi khi gặp vấn đề
+        -máy chủ riêng biệt để chạy DBMS
+    -Tài nguyên con người:
+        -Người quản trị hệ thống cở quản lý sở dữ liệu
+        -Người xây dựng, bảo trì hệ thống thông tin
+        -lập trình viên
