@@ -26,7 +26,7 @@ void setup() {
     Serial.println("\" started");
     Serial.print("IP address:\t");
     Serial.println(WiFi.softAPIP());
-    
+   
     WebSocket.begin();
     WebSocket.onEvent(SocketEvent);
     startServer();
@@ -42,7 +42,7 @@ void loop() {
 void startServer()
 {
   server.on("/edit.html",  HTTP_GET, []() {  // If a POST request is sent to the /edit.html address,
-    server.send(200, "text/plain", "k"); 
+    server.send(200, "text/plain", "<html></html>"); 
   });  
   server.onNotFound([](){
       server.send(404, "text/plain", "404: File Not Found");
