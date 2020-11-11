@@ -1,8 +1,64 @@
 <html>
-    <head>
-        <title>LittleFS</title>
-    </head>
-    <body>
-        <p>This is Index.html from LittleFS</p>
-    </body>
+
+<head>
+    <title>LittleFS</title>
+    <script src="./files/js/iro.min.js"></script>
+    <style>
+        #container {
+            display: flex;
+            justify-content: space-evenly;
+        }
+
+        #color_picker {
+            display: inline-block;
+            width: 40%;
+        }
+
+        #Color_preview {
+            width: 40%;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .btn {
+            font-size: 2em;
+            font-weight: bolder;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="container">
+        <div id="color_picker">
+
+        </div>
+        <div id="Color_preview" onclick="ChangeColor()">
+            <span class="btn" onclick="ChangeColor()">Change Color</span>
+        </div>
+    </div>
+    <script>"use strict";
+        let socket;
+        (() => {
+            let url = window.location.href.substring(4);
+            url = url.substring(0, url.length - 1);
+            socket = new WebSocket(`ws${url}:80/socket`);
+        })();
+        let colorWheel = new iro.ColorPicker('#color_picker');
+            colorWheel.on('color:change', function (color) {
+            document.getElementById("Color_preview").style.backgroundColor = `rgb(${color.rgb.r},${color.rgb.g},${color.rgb.b})`;
+        });
+        function ChangeColor()
+        {
+            let color = colorWheel.color.rgb;
+            let message = new Uint8Array([0,color.r,color.g,color.b]);
+            socket.send(message.buffer);
+        }
+        window.onbeforeunload = ()=>
+        {
+            socket.close();
+        }
+    </script>
+</body>
+
 </html>
