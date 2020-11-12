@@ -131,6 +131,7 @@ void ConfigServer()
       }
       if(ext == "sj") ext = "application/javascript";
       if(ext == "ssc") ext = "text/css";
+      if(ext == "ftt") ext = "text/plain";
       request->send(LittleFS, url, ext);
     }else
     {

@@ -2,11 +2,19 @@
 
 <head>
     <title>LittleFS</title>
-    <script src="./files/js/iro.min.js"></script>
+    <!-- <script src="./files/js/iro.min.js"></script> -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="./fonts/Roboto/Roboto-Bold.ttf" rel="stylesheet">
+    <script src="./js/iro.min.js"></script>
     <style>
+        *
+        {
+            font-family: 'Roboto-Bold', sans-serif;
+        }
         #container {
             display: flex;
             justify-content: space-evenly;
+            align-items: center;
         }
 
         #color_picker {
@@ -15,15 +23,27 @@
         }
 
         #Color_preview {
-            width: 40%;
-            display: inline-flex;
-            justify-content: center;
-            align-items: center;
+            width: 50%;
+            display: inline-block;
+            
         }
 
-        .btn {
+        #btn_submit {
+            border-radius: 99999px;
+            border:5px solid black;
+            height: 100px;
             font-size: 2em;
+            line-height:100px;
             font-weight: bolder;
+            text-align: center;
+            margin:auto;
+        }
+        #mode
+        {
+            display: block;
+            width: 100%;
+            margin-top:30px;
+            font-size: 1em;
         }
     </style>
 </head>
@@ -34,7 +54,13 @@
 
         </div>
         <div id="Color_preview" onclick="ChangeColor()">
-            <span class="btn" onclick="ChangeColor()">Change Color</span>
+            <div id="btn_submit" onclick="ChangeColor()">SUBMIT CHANGE</div>
+            <select name="" id="mode">
+                <option value="0">TRAILING</option>
+                <option value="1">ALTERNATING</option>
+                <option value="2">SNAKE</option>
+                
+            </select>
         </div>
     </div>
     <script>"use strict";
@@ -45,18 +71,25 @@
             socket = new WebSocket(`ws${url}:80/socket`);
         })();
         let colorWheel = new iro.ColorPicker('#color_picker');
-            colorWheel.on('color:change', function (color) {
-            document.getElementById("Color_preview").style.backgroundColor = `rgb(${color.rgb.r},${color.rgb.g},${color.rgb.b})`;
+        colorWheel.on('color:change', function (color) {
+            let YIQ = rgbToYIQ(color.rgb);
+            const threshHold = 128;
+            document.getElementById("btn_submit").style.backgroundColor = `rgb(${color.rgb.r},${color.rgb.g},${color.rgb.b})`;
+            document.getElementById("btn_submit").style.color = YIQ >=threshHold?'#000':'#fff';
+
         });
-        function ChangeColor()
-        {
+        function ChangeColor() {
             let color = colorWheel.color.rgb;
-            let message = new Uint8Array([0,color.r,color.g,color.b]);
+            let mode = document.getElementById("mode");
+            let message = new Uint8Array([mode.value, color.r, color.g, color.b]);
+            console.log(message);
             socket.send(message.buffer);
         }
-        window.onbeforeunload = ()=>
-        {
+        window.onbeforeunload = () => {
             socket.close();
+        }
+        function rgbToYIQ(color) {
+            return ((color.r * 299) + (color.g * 587) + (color.b * 114)) / 1000;
         }
     </script>
 </body>
