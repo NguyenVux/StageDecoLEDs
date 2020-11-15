@@ -2,15 +2,14 @@
 
 <head>
     <title>LittleFS</title>
-    <!-- <script src="./files/js/iro.min.js"></script> -->
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="./fonts/Roboto/Roboto-Bold.ttf" rel="stylesheet">
     <script src="./js/iro.min.js"></script>
     <style>
-        *
-        {
+        * {
             font-family: 'Roboto-Bold', sans-serif;
         }
+
         #container {
             display: flex;
             justify-content: space-evenly;
@@ -25,25 +24,61 @@
         #Color_preview {
             width: 50%;
             display: inline-block;
-            
+
         }
 
         #btn_submit {
             border-radius: 99999px;
-            border:5px solid black;
+            border: 5px solid black;
             height: 100px;
             font-size: 2em;
-            line-height:100px;
+            line-height: 100px;
             font-weight: bolder;
             text-align: center;
-            margin:auto;
+            margin: auto;
         }
-        #mode
-        {
+
+        #mode {
             display: block;
             width: 100%;
-            margin-top:30px;
+            margin-top: 30px;
             font-size: 1em;
+        }
+
+        #speed {
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        #box_speed {
+            width: 20%;
+            height: 80px;
+            display: inline-block;
+        }
+
+        .slider {
+            -webkit-appearance: none;
+            display: inline-block;
+            width: 75%;
+            height: 25px;
+            background: #d3d3d3;
+            outline: none;
+            opacity: 0.5;
+            -webkit-transition: .2s;
+            transition: opacity .1s;
+        }
+
+        .slider:hover {
+            opacity: 1;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 25px;
+            height: 25px;
+            background: #4CAF50;
+            cursor: pointer;
         }
     </style>
 </head>
@@ -53,18 +88,40 @@
         <div id="color_picker">
 
         </div>
-        <div id="Color_preview" onclick="ChangeColor()">
+        <div id="Color_preview">
             <div id="btn_submit" onclick="ChangeColor()">SUBMIT CHANGE</div>
             <select name="" id="mode">
                 <option value="0">TRAILING</option>
-                <option value="1">ALTERNATING</option>
+                <option value="1">BREATH</option>
                 <option value="2">SNAKE</option>
-                
+                <option value="3">SNAKE 2</option>
+                <option value="4">SNAKE 3</option>
+                <option value="5">TETRIS</option>
+                <option value="6">DOT</option>
+                <option value="7">RAINBOW</option>
+                <option value="8">RAINBOW ANIMATED</option>
             </select>
+            <div id="speed">
+                <input type="range" min="20" max="1000" value="70" class="slider" id="myRange">
+                <input id="box_speed" type="text" value="70" />
+            </div>
         </div>
     </div>
     <script>"use strict";
         let socket;
+        let slider = document.getElementById("myRange");
+        let output = document.getElementById("box_speed");
+        output.value = slider.value; // Display the default slider value
+        output.onchange = () =>
+        {
+            slider.value = output.value;
+        }
+
+
+        // Update the current slider value (each time you drag the slider handle)
+        slider.oninput = function () {
+            output.value = slider.value;
+        };
         (() => {
             let url = window.location.href.substring(4);
             url = url.substring(0, url.length - 1);
@@ -75,13 +132,14 @@
             let YIQ = rgbToYIQ(color.rgb);
             const threshHold = 128;
             document.getElementById("btn_submit").style.backgroundColor = `rgb(${color.rgb.r},${color.rgb.g},${color.rgb.b})`;
-            document.getElementById("btn_submit").style.color = YIQ >=threshHold?'#000':'#fff';
+            document.getElementById("btn_submit").style.color = YIQ >= threshHold ? '#000' : '#fff';
 
         });
         function ChangeColor() {
             let color = colorWheel.color.rgb;
             let mode = document.getElementById("mode");
-            let message = new Uint8Array([mode.value, color.r, color.g, color.b]);
+            Uint16Array
+            let message = new Uint8Array([mode.value,slider.value &0xff,slider.value>>8&0xff,1,color.r,color.g,color.b,0]);
             console.log(message);
             socket.send(message.buffer);
         }
