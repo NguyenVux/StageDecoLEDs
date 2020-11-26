@@ -3,7 +3,8 @@
 #include <Adafruit_NeoPixel.h>
 #include <vector>
 
-#define snakeLength 1
+#define snakeLength 3
+#define gap 7
 class WS2811LED
 {
     public:
@@ -17,13 +18,14 @@ class WS2811LED
         TETRIS,
         DOT,
         RAINBOW,
-        RAINBOW2
+        RAINBOW2,
+        DOTTED_LINE
         
     };
     private:
     Adafruit_NeoPixel *strip = 0;
     std::vector<uint32_t> colors;
-    uint8_t _mode =  RAINBOW2;
+    uint8_t _mode =  DOTTED_LINE;
     uint16_t _leds = 0;
     uint16_t _speed = 70;
     void Trailing();
@@ -35,6 +37,7 @@ class WS2811LED
     void Dot();
     void Rainbow();
     void Rainbow2();
+    void dotted_line();
     public:
     WS2811LED(uint16_t LedCount,uint8_t PIN = 5,uint8_t colorCount = 1);
     void exec();

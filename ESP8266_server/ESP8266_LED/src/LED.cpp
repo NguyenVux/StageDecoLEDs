@@ -45,6 +45,10 @@ void WS2811LED::exec()
         Rainbow2();
         break;
 
+    case DOTTED_LINE:
+        dotted_line();
+        break;
+
     default:
         break;
     }
@@ -189,6 +193,7 @@ void WS2811LED::Breath()
             return;
         strip->fill(colors[0]);
         strip->setBrightness(KEYFRAMES[i]);
+        yield();
         strip->show();
         delay(_speed);
     }
@@ -233,6 +238,7 @@ void WS2811LED::Snake2()
             return;
         strip->setPixelColor(i, colors[0]);
         strip->show();
+        yield();
         delay(_speed);
     }
 }
@@ -247,6 +253,7 @@ void WS2811LED::Snake3()
         strip->setPixelColor(i, colors[0]);
         strip->setPixelColor(_leds - 1 - i, colors[0]);
         strip->show();
+        yield();
         delay(_speed);
     }
 }
@@ -268,7 +275,9 @@ void WS2811LED::Tetris()
                 strip->fill(colors[0], index);
             strip->setPixelColor(k, colors[0]);
             strip->show();
+            yield();
             delay(_speed);
+            
         }
     }
 }
@@ -284,6 +293,7 @@ void WS2811LED::Dot()
         {
             if (k >= 0)
                 strip->setPixelColor(k, colors[0]);
+            yield();
         }
         strip->show();
         delay(_speed);
@@ -316,6 +326,34 @@ void WS2811LED::Rainbow2()
             yield();
         }
         strip->show();
+        delay(_speed);
+    }
+}
+
+void WS2811LED::dotted_line()
+{
+    uint8_t segmentCount = _leds/(snakeLength+gap);
+    for(uint16_t i = 0; true ;++i)
+    {
+        strip->clear();
+        for(int d = 0; d < segmentCount;++d)
+        {
+            int pos = i-d*(snakeLength+gap);
+            pos = pos%_leds+(pos<0)*_leds;
+            for(uint8_t k = 0; k < snakeLength;++k )
+            {
+                if(_mode != DOTTED_LINE)
+                {
+                    return;
+                }
+                int pos2 = pos-k;
+                pos2 = pos2%_leds+(pos2<0)*_leds;
+                strip->setPixelColor(pos2, colors[0]);
+                
+            }
+        }
+        strip->show();
+        yield();
         delay(_speed);
     }
 }

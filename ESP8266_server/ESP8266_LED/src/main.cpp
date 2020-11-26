@@ -14,7 +14,7 @@ void setup()
   WiFi.mode(WIFI_AP);
   Serial.begin(115200);
   pinMode(PIN, OUTPUT);
-  strip = new WS2811LED(50);
+  strip = new WS2811LED(100);
   socket.attachWS2811(strip);
   // WiFi.mode(WIFI_STA);
   // WiFi.begin(ssid, password);
